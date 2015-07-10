@@ -4,12 +4,11 @@ var router = express.Router();
 var mongoose = require('mongoose');
 
 mongoose.connect("mongodb://localhost/twinder");
-console.log(mongoose);
 
 var Ignore = mongoose.model("Ignore", {
   ignoredUser: String
 });
-console.log(Ignore);
+
 Ignore.create({ignoredUser: "test user"});
 
 function twitterClient(params) {

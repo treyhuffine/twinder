@@ -4,7 +4,7 @@ var app = angular.module('sif', ['ui.router']);
 
 angular.module('sif')
 .run(function(){
-  console.log('Sif Online');
+  console.log('Sif Online! Twinder!');
 });
 
 'use strict';
