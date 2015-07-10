@@ -6,10 +6,8 @@ var mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost/twinder");
 
 var Ignore = mongoose.model("Ignore", {
-  ignoredUser: String
+  ignoredUser: {type: String, required: true, unique: true}
 });
-
-Ignore.create({ignoredUser: "test user"});
 
 function twitterClient(params) {
   return new Twitter({
@@ -82,6 +80,18 @@ router.post('/follow', function(req, res, next) {
     res.json(user);
   });
 
+});
+
+router.post('/ignores', function(req, res, next) {
+  var ignore = new Ignore(req.body);
+  console.log(req.body);
+  console.log(ignore);
+  ignore.save(function(err, ignoredUser) {
+    if (err) {
+      res.status(400).json({error: "Validation Failed"});
+    }
+    res.json(ignoredUser);
+  });
 });
 
 module.exports = router;

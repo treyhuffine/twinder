@@ -4,7 +4,7 @@ var app = angular.module('sif', ['ui.router']);
 
 angular.module('sif')
 .run(function(){
-  console.log('Sif Online! Twinder!');
+  console.log('Twinder!');
 });
 
 'use strict';
@@ -24,12 +24,11 @@ angular.module('sif')
   'apiUrl': ''
 });
 
-'use strict';
-
 angular.module('sif')
 .controller("mainCtrl", function($scope, twitterUser) {
   $scope.tags = [];
   $scope.tweet = "";
+  $scope.ignores = [];
 
   $scope.btnStyle = function(ratio) {
     var greenScale = Math.floor(125 * ratio);
@@ -76,6 +75,18 @@ angular.module('sif')
   $scope.includeInTweet = function(tag) {
     $scope.tweet = $scope.tweet + " " + tag;
   };
+
+  $scope.ignoreUser = function(ignoreName) {
+    twitterUser.ignoreUser(ignoreName)
+      .success(function(resp) {
+        console.log(resp);
+        $scope.ignores.push(resp.ignoredUser);
+        $scope.data.users[ignoreName] = {};
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
 });
 
 'use strict';
@@ -104,6 +115,19 @@ angular.module('sif')
       }
     });
     return filteredUsers;
+  };
+});
+
+angular.module('sif')
+.filter('ignoredFilter', function() {
+  return function(users, ignores) {
+    var unIgnored = {};
+    angular.forEach(users, function(userData, screenName) {
+      if (ignores.indexOf(screenName) === -1) {
+        unIgnored[screenName] = userData;
+      }
+    });
+    return unIgnored;
   };
 });
 
@@ -144,7 +168,7 @@ angular.module('sif')
     // obj.access_token_key = FBService.currentUser.accessToken;
     // obj.access_token_secret = FBService.currentUser.accessTokenSecret;
     return obj;
-  }
+  };
 
   this.search = function(words) {
     var data = withTokens({ words: words });
@@ -161,4 +185,7 @@ angular.module('sif')
     return $http.post(urls.apiUrl + "/follow", data);
   };
 
+  this.ignoreUser = function(screenName) {
+    return $http.post(urls.apiUrl + "/ignores", {ignoredUser: screenName});
+  };
 });

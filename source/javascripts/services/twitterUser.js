@@ -7,7 +7,7 @@ angular.module('sif')
     // obj.access_token_key = FBService.currentUser.accessToken;
     // obj.access_token_secret = FBService.currentUser.accessTokenSecret;
     return obj;
-  }
+  };
 
   this.search = function(words) {
     var data = withTokens({ words: words });
@@ -24,4 +24,7 @@ angular.module('sif')
     return $http.post(urls.apiUrl + "/follow", data);
   };
 
+  this.ignoreUser = function(screenName) {
+    return $http.post(urls.apiUrl + "/ignores", {ignoredUser: screenName});
+  };
 });

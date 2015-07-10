@@ -1,9 +1,8 @@
-'use strict';
-
 angular.module('sif')
 .controller("mainCtrl", function($scope, twitterUser) {
   $scope.tags = [];
   $scope.tweet = "";
+  $scope.ignores = [];
 
   $scope.btnStyle = function(ratio) {
     var greenScale = Math.floor(125 * ratio);
@@ -49,5 +48,17 @@ angular.module('sif')
 
   $scope.includeInTweet = function(tag) {
     $scope.tweet = $scope.tweet + " " + tag;
+  };
+
+  $scope.ignoreUser = function(ignoreName) {
+    twitterUser.ignoreUser(ignoreName)
+      .success(function(resp) {
+        console.log(resp);
+        $scope.ignores.push(resp.ignoredUser);
+        $scope.data.users[ignoreName] = {};
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   };
 });
