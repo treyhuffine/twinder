@@ -10,16 +10,16 @@ var routes = function(passport) {
 //   ignoredUser: {type: String, required: true, unique: true}
 // });
 
-// function twitterClient(params) {
-//   return new Twitter({
-//     consumer_key: process.env.CONSUMER_KEY,
-//     consumer_secret: process.env.CONSUMER_SECRET,
-//     access_token_key: process.env.ACCESS_TOKEN_KEY,
-//     access_token_secret: process.env.ACCESS_TOKEN_SECRET
-//     // access_token_key: params.access_token_key,
-//     // access_token_secret: params.access_token_secret
-//   });
-// }
+function twitterClient(params) {
+  return new Twitter({
+    consumer_key: process.env.CONSUMER_KEY,
+    consumer_secret: process.env.CONSUMER_SECRET,
+    // access_token_key: process.env.ACCESS_TOKEN_KEY,
+    // access_token_secret: process.env.ACCESS_TOKEN_SECRET
+    access_token_key: params.access_token_key,
+    access_token_secret: params.access_token_secret
+  });
+}
 //
   router.get('/auth/twitter', passport.authenticate('twitter'));
 
