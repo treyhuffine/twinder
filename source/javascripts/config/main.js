@@ -5,7 +5,7 @@ angular.module('sif')
   $urlRouterProvider.otherwise('/');
 
   $stateProvider
-  .state('home', {url: '/', templateUrl: '/templates/home/home.html'})
+  .state('home', {url: '/', templateUrl: '/templates/home/home.html'});
 });
 
 'use strict';

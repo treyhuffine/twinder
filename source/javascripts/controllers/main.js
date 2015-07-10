@@ -24,6 +24,7 @@ angular.module('sif')
   };
 
   $scope.search = function() {
+    console.log("searching");
     twitterUser.search($scope.words)
     .success(function(data) {
       console.log(data);

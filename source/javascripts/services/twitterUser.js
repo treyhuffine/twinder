@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sif')
-.service('twitterUser', function(urls, $http, FBService) {
+.service('twitterUser', function(urls, $http) {
 
   var withTokens = function(obj) {
     // obj.access_token_key = FBService.currentUser.accessToken;

@@ -1,15 +1,27 @@
 var express = require('express');
 var Twitter = require("twitter");
 var router = express.Router();
+var mongoose = require('mongoose');
+
+mongoose.connect("mongodb://localhost/twinder");
+console.log(mongoose);
+
+var Ignore = mongoose.model("Ignore", {
+  ignoredUser: String
+});
+console.log(Ignore);
+Ignore.create({ignoredUser: "test user"});
 
 function twitterClient(params) {
   return new Twitter({
     consumer_key: process.env.CONSUMER_KEY,
     consumer_secret: process.env.CONSUMER_SECRET,
-    access_token_key: params.access_token_key,
-    access_token_secret: params.access_token_secret
+    access_token_key: process.env.ACCESS_TOKEN_KEY,
+    access_token_secret: process.env.ACCESS_TOKEN_SECRET
+    // access_token_key: params.access_token_key,
+    // access_token_secret: params.access_token_secret
   });
-};
+}
 
 router.post('/tweet', function(req, res, next) {
   var client = twitterClient(req.body);
@@ -28,6 +40,7 @@ router.post('/tweet', function(req, res, next) {
 router.post('/search', function(req, res, next) {
   var client = twitterClient(req.body);
   var words = req.body.words.toLowerCase().split(" ");
+  console.log(client);
 
   client.get('search/tweets', { q: words.join(" OR "), count: 100 }, function(error, tweets, response){
     if (error) {
