@@ -50,7 +50,20 @@ angular.module('sif')
     $scope.tweet = $scope.tweet + " " + tag;
   };
 
+  $scope.getIgnores = function() {
+    twitterUser.getIgnores()
+      .success(function(data) {
+        console.log(data);
+        $scope.ignores = data;
+        console.log($scope.ignores);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
+  $scope.getIgnores();
   $scope.ignoreUser = function(ignoreName) {
+    $scope.checkIgnores();
     twitterUser.ignoreUser(ignoreName)
       .success(function(resp) {
         console.log(resp);
@@ -60,5 +73,15 @@ angular.module('sif')
       .catch(function(error) {
         console.log(error);
       });
+  };
+
+  $scope.checkIgnores = function() {
+    angular.forEach($scope.ignores, function(userData, screenName) {
+      angular.forEach($scope.data.users, function(ignoredData, idx) {
+        if (ignoredData.screen_name === userData.ignoredUser) {
+          $scope.data.users[screenName].isIgnored = true;
+        }
+      });
+    });
   };
 });

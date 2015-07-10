@@ -3,9 +3,13 @@ angular.module('sif')
   return function(users, ignores) {
     var unIgnored = {};
     angular.forEach(users, function(userData, screenName) {
-      if (ignores.indexOf(screenName) === -1) {
-        unIgnored[screenName] = userData;
-      }
+      angular.forEach(ignores, function(ignoredData, idx) {
+        console.log(userData);
+        console.log(ignoredData);
+        if (ignoredData.ignoredUser === screenName) {
+          unIgnored[screenName] = userData;
+        }
+      });
     });
     return unIgnored;
   };

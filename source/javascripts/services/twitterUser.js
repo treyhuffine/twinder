@@ -27,4 +27,8 @@ angular.module('sif')
   this.ignoreUser = function(screenName) {
     return $http.post(urls.apiUrl + "/ignores", {ignoredUser: screenName});
   };
+
+  this.getIgnores = function() {
+    return $http.get(urls.apiUrl + "/ignores");
+  };
 });

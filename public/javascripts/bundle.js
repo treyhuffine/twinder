@@ -76,7 +76,20 @@ angular.module('sif')
     $scope.tweet = $scope.tweet + " " + tag;
   };
 
+  $scope.getIgnores = function() {
+    twitterUser.getIgnores()
+      .success(function(data) {
+        console.log(data);
+        $scope.ignores = data;
+        console.log($scope.ignores);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  };
+  $scope.getIgnores();
   $scope.ignoreUser = function(ignoreName) {
+    $scope.checkIgnores();
     twitterUser.ignoreUser(ignoreName)
       .success(function(resp) {
         console.log(resp);
@@ -86,6 +99,16 @@ angular.module('sif')
       .catch(function(error) {
         console.log(error);
       });
+  };
+
+  $scope.checkIgnores = function() {
+    angular.forEach($scope.ignores, function(userData, screenName) {
+      angular.forEach($scope.data.users, function(ignoredData, idx) {
+        if (ignoredData.screen_name === userData.ignoredUser) {
+          $scope.data.users[screenName].isIgnored = true;
+        }
+      });
+    });
   };
 });
 
@@ -97,38 +120,6 @@ angular.module('sif')
   // $scope.logout = FBService.twitterLogout;
   //
   // $scope.currentUser = FBService.currentUser;
-});
-
-'use strict';
-
-angular.module('sif')
-.filter('friendsFilter', function() {
-  return function(users, showFriends) {
-    if (showFriends) {
-      return users;
-    }
-
-    var filteredUsers = {};
-    angular.forEach(users, function(userData, screenName) {
-      if (!userData.following) {
-        filteredUsers[screenName] = userData;
-      }
-    });
-    return filteredUsers;
-  };
-});
-
-angular.module('sif')
-.filter('ignoredFilter', function() {
-  return function(users, ignores) {
-    var unIgnored = {};
-    angular.forEach(users, function(userData, screenName) {
-      if (ignores.indexOf(screenName) === -1) {
-        unIgnored[screenName] = userData;
-      }
-    });
-    return unIgnored;
-  };
 });
 
 'use strict';
@@ -187,5 +178,45 @@ angular.module('sif')
 
   this.ignoreUser = function(screenName) {
     return $http.post(urls.apiUrl + "/ignores", {ignoredUser: screenName});
+  };
+
+  this.getIgnores = function() {
+    return $http.get(urls.apiUrl + "/ignores");
+  };
+});
+
+'use strict';
+
+angular.module('sif')
+.filter('friendsFilter', function() {
+  return function(users, showFriends) {
+    if (showFriends) {
+      return users;
+    }
+
+    var filteredUsers = {};
+    angular.forEach(users, function(userData, screenName) {
+      if (!userData.following) {
+        filteredUsers[screenName] = userData;
+      }
+    });
+    return filteredUsers;
+  };
+});
+
+angular.module('sif')
+.filter('ignoredFilter', function() {
+  return function(users, ignores) {
+    var unIgnored = {};
+    angular.forEach(users, function(userData, screenName) {
+      angular.forEach(ignores, function(ignoredData, idx) {
+        console.log(userData);
+        console.log(ignoredData);
+        if (ignoredData.ignoredUser === screenName) {
+          unIgnored[screenName] = userData;
+        }
+      });
+    });
+    return unIgnored;
   };
 });

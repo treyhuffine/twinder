@@ -3,7 +3,7 @@ var Twitter = require("twitter");
 var router = express.Router();
 var mongoose = require('mongoose');
 
-mongoose.connect("mongodb://localhost/twinder");
+mongoose.connect(process.env.MONGOLAB_URI);
 
 var Ignore = mongoose.model("Ignore", {
   ignoredUser: {type: String, required: true, unique: true}
@@ -91,6 +91,16 @@ router.post('/ignores', function(req, res, next) {
       res.status(400).json({error: "Validation Failed"});
     }
     res.json(ignoredUser);
+  });
+});
+
+router.get('/ignores', function(req, res, next) {
+  Ignore.find({}).exec(function(err, ignores) {
+    if(err) {
+      console.log(err);
+      res.status(400).json({error: "Could not read questions data"});
+    }
+    res.json(ignores);
   });
 });
 
